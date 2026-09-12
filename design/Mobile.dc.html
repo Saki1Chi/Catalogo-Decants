@@ -1,0 +1,145 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    :root {
+      --bg: #faf9f6; --surface: #ffffff; --fg: #211f1d; --muted: #6b6560;
+      --border: #e7e3dd; --accent: #9c7a45; --accent-fg: #ffffff;
+      --danger: #b5473a; --success: #4a7a5a;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--fg); font-family: 'Inter', system-ui, sans-serif; }
+    h1, h2, h3 { font-family: 'Playfair Display', Georgia, serif; margin: 0; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { color: #7d602f; }
+    .chip { display: inline-flex; align-items: center; border-radius: 999px; font-size: 11px; padding: 3px 9px; }
+  </style>
+</helmet>
+
+<div style="width:390px; min-height:1720px; background:var(--bg);">
+
+  <!-- Header -->
+  <div style="display:flex; align-items:center; justify-content:space-between; padding:16px 18px; border-bottom:1px solid var(--border);">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--fg)" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+    <div style="font-size:16px; font-weight:700;">[Negocio]</div>
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--fg)" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+  </div>
+
+  <!-- Placeholder notice -->
+  <div style="padding:12px 18px 0 18px;">
+    <div style="border:1px dashed color-mix(in srgb, var(--accent) 45%, transparent); background: color-mix(in srgb, var(--accent) 6%, var(--surface)); border-radius:10px; padding:9px 12px; font-size:11px; color: color-mix(in srgb, var(--fg) 75%, var(--muted));">
+      <strong style="color:var(--fg); font-weight:600;">Catálogo de ejemplo.</strong> Datos de muestra.
+    </div>
+  </div>
+
+  <!-- Hero -->
+  <div style="display:flex; flex-direction:column; align-items:center; gap:10px; text-align:center; padding:36px 22px 28px 22px;">
+    <div style="font-size:11px; letter-spacing:0.12em; text-transform:uppercase; color:var(--accent); font-weight:600;">Muestrario de fragancias</div>
+    <h1 style="font-size:28px; line-height:1.15;">[Nombre del Negocio]</h1>
+    <p style="color:var(--muted); font-size:13.5px; line-height:1.55; margin:0;">[Eslogan o propuesta de valor del negocio, una frase corta.]</p>
+    <a href="#" style="width:100%; text-align:center; background:var(--accent); color:var(--accent-fg); padding:13px 20px; border-radius:999px; font-size:14px; font-weight:600; margin-top:6px;">Ver catálogo</a>
+  </div>
+
+  <!-- Search + filter -->
+  <div style="padding:0 18px 18px 18px;">
+    <div style="display:flex; align-items:center; gap:8px; border:1px solid var(--border); background:var(--surface); border-radius:8px; padding:10px 12px; margin-bottom:12px;">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      <span style="color:var(--muted); font-size:13px;">Buscar por nombre o marca...</span>
+    </div>
+    <div style="display:flex; gap:8px; overflow:hidden;">
+      <div class="chip" style="background:var(--fg); color:var(--bg); font-weight:600;">Todos</div>
+      <div class="chip" style="border:1px solid var(--border); color:var(--fg);">Hombre</div>
+      <div class="chip" style="border:1px solid var(--border); color:var(--fg);">Mujer</div>
+      <div class="chip" style="border:1px solid var(--border); color:var(--fg);">Unisex</div>
+    </div>
+  </div>
+
+  <!-- Grid: 2 cols -->
+  <div style="padding:0 18px; display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap:14px;">
+
+    <div style="border:1px solid var(--border); border-radius:12px; background:var(--surface); overflow:hidden;">
+      <div style="aspect-ratio:1/1; background:color-mix(in srgb, var(--accent) 10%, var(--surface)); display:flex; align-items:center; justify-content:center;">
+        <svg width="44" height="44" viewBox="0 0 100 100" fill="none" stroke="var(--accent)" stroke-width="2" opacity="0.65"><rect x="38" y="10" width="24" height="12" rx="3"/><path d="M34 26h32c3 0 5 2 5 5v8c4 2 6 6 6 11v34c0 5-4 9-9 9H32c-5 0-9-4-9-9V50c0-5 2-9 6-11v-8c0-3 2-5 5-5Z"/><path d="M30 52h40"/></svg>
+      </div>
+      <div style="padding:12px; display:flex; flex-direction:column; gap:5px;">
+        <div style="font-size:9.5px; letter-spacing:0.06em; text-transform:uppercase; color:var(--muted);">Casa Aroma</div>
+        <div style="font-family:'Playfair Display',serif; font-size:14px; font-weight:700;">Aurum Noir</div>
+        <div style="font-size:13px; font-weight:600;">Desde $180</div>
+        <span class="chip" style="background:color-mix(in srgb, var(--success) 12%, white); color:var(--success); font-weight:600; align-self:flex-start;">En stock</span>
+      </div>
+    </div>
+
+    <div style="border:1px solid var(--border); border-radius:12px; background:var(--surface); overflow:hidden;">
+      <div style="aspect-ratio:1/1; background:color-mix(in srgb, var(--accent) 10%, var(--surface)); display:flex; align-items:center; justify-content:center;">
+        <svg width="44" height="44" viewBox="0 0 100 100" fill="none" stroke="var(--accent)" stroke-width="2" opacity="0.65"><rect x="38" y="10" width="24" height="12" rx="3"/><path d="M34 26h32c3 0 5 2 5 5v8c4 2 6 6 6 11v34c0 5-4 9-9 9H32c-5 0-9-4-9-9V50c0-5 2-9 6-11v-8c0-3 2-5 5-5Z"/><path d="M30 52h40"/></svg>
+      </div>
+      <div style="padding:12px; display:flex; flex-direction:column; gap:5px;">
+        <div style="font-size:9.5px; letter-spacing:0.06em; text-transform:uppercase; color:var(--muted);">Casa Aroma</div>
+        <div style="font-family:'Playfair Display',serif; font-size:14px; font-weight:700;">Velvet Rose</div>
+        <div style="font-size:13px; font-weight:600;">Desde $190</div>
+        <span class="chip" style="background:color-mix(in srgb, var(--accent) 15%, white); color:var(--accent); font-weight:600; align-self:flex-start;">Pocas unidades</span>
+      </div>
+    </div>
+
+    <div style="border:1px solid var(--border); border-radius:12px; background:var(--surface); overflow:hidden;">
+      <div style="aspect-ratio:1/1; background:color-mix(in srgb, var(--accent) 10%, var(--surface)); display:flex; align-items:center; justify-content:center;">
+        <svg width="44" height="44" viewBox="0 0 100 100" fill="none" stroke="var(--accent)" stroke-width="2" opacity="0.65"><rect x="38" y="10" width="24" height="12" rx="3"/><path d="M34 26h32c3 0 5 2 5 5v8c4 2 6 6 6 11v34c0 5-4 9-9 9H32c-5 0-9-4-9-9V50c0-5 2-9 6-11v-8c0-3 2-5 5-5Z"/><path d="M30 52h40"/></svg>
+      </div>
+      <div style="padding:12px; display:flex; flex-direction:column; gap:5px;">
+        <div style="font-size:9.5px; letter-spacing:0.06em; text-transform:uppercase; color:var(--muted);">Nortis</div>
+        <div style="font-family:'Playfair Display',serif; font-size:14px; font-weight:700;">Ocean Drift</div>
+        <div style="font-size:13px; font-weight:600;">Desde $160</div>
+        <span class="chip" style="background:color-mix(in srgb, var(--success) 12%, white); color:var(--success); font-weight:600; align-self:flex-start;">En stock</span>
+      </div>
+    </div>
+
+    <div style="border:1px solid var(--border); border-radius:12px; background:var(--surface); overflow:hidden;">
+      <div style="aspect-ratio:1/1; background:color-mix(in srgb, var(--accent) 10%, var(--surface)); display:flex; align-items:center; justify-content:center;">
+        <svg width="44" height="44" viewBox="0 0 100 100" fill="none" stroke="var(--accent)" stroke-width="2" opacity="0.65"><rect x="38" y="10" width="24" height="12" rx="3"/><path d="M34 26h32c3 0 5 2 5 5v8c4 2 6 6 6 11v34c0 5-4 9-9 9H32c-5 0-9-4-9-9V50c0-5 2-9 6-11v-8c0-3 2-5 5-5Z"/><path d="M30 52h40"/></svg>
+      </div>
+      <div style="padding:12px; display:flex; flex-direction:column; gap:5px;">
+        <div style="font-size:9.5px; letter-spacing:0.06em; text-transform:uppercase; color:var(--muted);">Nortis</div>
+        <div style="font-family:'Playfair Display',serif; font-size:14px; font-weight:700;">Golden Oud</div>
+        <div style="font-size:13px; font-weight:600;">Desde $210</div>
+        <span class="chip" style="background:color-mix(in srgb, var(--danger) 10%, white); color:var(--danger); font-weight:600; align-self:flex-start;">Agotado</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Sticky-style contact CTA -->
+  <div style="margin:28px 18px 0 18px; border:1px solid var(--border); background:var(--surface); border-radius:14px; padding:20px; display:flex; flex-direction:column; gap:10px;">
+    <div style="font-size:13.5px; color:var(--muted);">¿Preguntas sobre un aroma o disponibilidad?</div>
+    <a href="#" style="display:flex; align-items:center; justify-content:center; gap:9px; background:var(--success); color:#fff; padding:13px; border-radius:8px; font-size:14px; font-weight:600;">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="#fff"><path d="M12 2a10 10 0 0 0-8.6 15L2 22l5.2-1.4A10 10 0 1 0 12 2Zm5.3 14.3c-.2.6-1.3 1.2-1.9 1.3-.5.1-1.1.1-1.8-.1-.4-.1-.9-.3-1.6-.6-2.8-1.2-4.6-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.8 0-1.3.7-2 1-2.2.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5.2.5.7 1.8.8 1.9.1.2.1.4 0 .6-.1.2-.2.3-.4.5-.2.2-.4.4-.5.6-.2.2-.3.4-.1.7.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.4 2.5 1.6.3.1.5.1.6-.1.2-.2.7-.8.9-1.1.2-.3.4-.2.6-.1.2.1 1.5.7 1.8.8.3.1.5.2.5.3.1.2.1.6-.1 1.1Z"/></svg>
+      Escribir por WhatsApp
+    </a>
+  </div>
+
+  <!-- Bottom tab bar -->
+  <div style="margin-top:32px; display:flex; align-items:center; justify-content:space-around; border-top:1px solid var(--border); background:var(--surface); padding:12px 0 18px 0;">
+    <div style="display:flex; flex-direction:column; align-items:center; gap:4px; color:var(--fg);">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 11 9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
+      <span style="font-size:10px;">Inicio</span>
+    </div>
+    <div style="display:flex; flex-direction:column; align-items:center; gap:4px; color:var(--muted);">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      <span style="font-size:10px;">Catálogo</span>
+    </div>
+    <div style="display:flex; flex-direction:column; align-items:center; gap:4px; color:var(--muted);">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 0 0-8.6 15L2 22l5.2-1.4A10 10 0 1 0 12 2Z"/></svg>
+      <span style="font-size:10px;">Contacto</span>
+    </div>
+  </div>
+
+</div>
+</x-dc>
+</body>
+</html>

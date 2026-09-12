@@ -1,0 +1,266 @@
+@import "tailwindcss";
+
+/* Tema claro (default).
+   Neutros cálidos: el fondo nunca es blanco puro — los 3 sitios de referencia
+   usan un off-white porque el blanco puro compite con la foto de producto. */
+:root {
+  color-scheme: light;
+
+  --background: #f4f2ee;
+  --surface: #ffffff;
+  --surface-alt: #eae6de;
+  --ink: #14120f;
+  --foreground: #14120f;
+  --muted: #6f6862;
+  --border: #dcd6cc;
+  --line-strong: #c6bdaf;
+  /* El oro es acento de detalle (hairlines, versalitas), no color de botón. */
+  --accent: #8a6a3b;
+  --accent-foreground: #ffffff;
+  --danger: #8f3b2f;
+  --success: #3f6b4f;
+
+  /* Bloques invertidos (barra de anuncios, footer, dorso de card). En claro son
+     el negativo de la página; en oscuro no pueden ser "más claros" o el footer
+     quedaría iluminado, así que tienen token propio en vez de derivarse de ink. */
+  --panel: #14120f;
+  --panel-foreground: #f4f2ee;
+
+  /* Velo del modal: siempre oscurece, en los dos temas. */
+  --scrim: rgba(20, 18, 15, 0.5);
+
+  /* Luz de la composición del frasco. */
+  --display-glow-a: rgba(255, 255, 255, 0.95);
+  --display-glow-b: rgba(240, 235, 226, 0.55);
+  --display-glow-c: rgba(224, 216, 203, 0.35);
+  --display-shadow: rgba(20, 18, 15, 0.22);
+}
+
+/* Tema oscuro por preferencia del sistema — solo si el usuario no eligió claro
+   a mano. Sin esto, alguien con el sistema en oscuro y JS bloqueado vería la
+   página en claro. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-tema="light"]) {
+    color-scheme: dark;
+
+    --background: #100f0d;
+    --surface: #191714;
+    --surface-alt: #221f1a;
+    --ink: #f2efe9;
+    --foreground: #f2efe9;
+    --muted: #a19992;
+    --border: #2f2b26;
+    --line-strong: #46403a;
+    --accent: #c9a66b;
+    --accent-foreground: #14120f;
+    --danger: #d1705f;
+    --success: #6fa583;
+
+    --panel: #211e19;
+    --panel-foreground: #f2efe9;
+
+    --scrim: rgba(0, 0, 0, 0.72);
+
+    --display-glow-a: rgba(255, 255, 255, 0.07);
+    --display-glow-b: rgba(255, 255, 255, 0.025);
+    --display-glow-c: rgba(0, 0, 0, 0.25);
+    --display-shadow: rgba(0, 0, 0, 0.55);
+  }
+}
+
+/* Elección explícita del usuario — gana sobre la preferencia del sistema. */
+:root[data-tema="dark"] {
+  color-scheme: dark;
+
+  --background: #100f0d;
+  --surface: #191714;
+  --surface-alt: #221f1a;
+  --ink: #f2efe9;
+  --foreground: #f2efe9;
+  --muted: #a19992;
+  --border: #2f2b26;
+  --line-strong: #46403a;
+  --accent: #c9a66b;
+  --accent-foreground: #14120f;
+  --danger: #d1705f;
+  --success: #6fa583;
+
+  --panel: #211e19;
+  --panel-foreground: #f2efe9;
+
+  --scrim: rgba(0, 0, 0, 0.72);
+
+  --display-glow-a: rgba(255, 255, 255, 0.07);
+  --display-glow-b: rgba(255, 255, 255, 0.025);
+  --display-glow-c: rgba(0, 0, 0, 0.25);
+  --display-shadow: rgba(0, 0, 0, 0.55);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-alt: var(--surface-alt);
+  --color-ink: var(--ink);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-line-strong: var(--line-strong);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-danger: var(--danger);
+  --color-success: var(--success);
+  --color-panel: var(--panel);
+  --color-panel-foreground: var(--panel-foreground);
+  --color-scrim: var(--scrim);
+  --font-sans: var(--font-body);
+  --font-serif: var(--font-heading);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
+
+/* Esquinas rectas en todo el sistema. Los 3 sitios analizados usan
+   border-radius: 0 en cards y botones; el radius redondeado leía "producto
+   SaaS" y no "boutique". */
+@layer base {
+  input,
+  select,
+  button {
+    border-radius: 0;
+  }
+}
+
+/* Micro-label en versalitas: el recurso tipográfico que más "formaliza". */
+.eyebrow {
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+/* Regla corta bajo los títulos de sección — remate editorial. */
+.rule::after {
+  content: "";
+  display: block;
+  width: 44px;
+  height: 1px;
+  margin-top: 18px;
+  background: var(--accent);
+}
+
+/* Reveal on scroll con IntersectionObserver nativo (ver useReveal): no se
+   carga ninguna librería de animación solo para un fade-in. */
+.reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition:
+    opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Crossfade de la card: dos capas superpuestas que se cruzan en hover
+   (frente = frasco, dorso = notas olfativas). CSS puro, sin JS. */
+.card-media .media-front,
+.card-media .media-back {
+  transition: opacity 0.45s ease;
+}
+
+.card-media .media-back {
+  opacity: 0;
+}
+
+.product-card:hover .card-media .media-front,
+.product-card:focus-within .card-media .media-front {
+  opacity: 0;
+}
+
+.product-card:hover .card-media .media-back,
+.product-card:focus-within .card-media .media-back {
+  opacity: 1;
+}
+
+/* Composición del frasco: la luz y la sombra salen de tokens para que el
+   tema oscuro no muestre un cuadrado blanco. */
+.display-glow {
+  background: radial-gradient(
+    120% 85% at 50% 8%,
+    var(--display-glow-a) 0%,
+    var(--display-glow-b) 45%,
+    var(--display-glow-c) 100%
+  );
+}
+
+.display-shadow {
+  background: radial-gradient(
+    50% 50% at 50% 50%,
+    var(--display-shadow) 0%,
+    transparent 100%
+  );
+}
+
+/* Subrayado que crece desde la izquierda — usado en la nav y en links de texto. */
+.link-underline {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  background-size: 0% 1px;
+  transition: background-size 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.link-underline:hover {
+  background-size: 100% 1px;
+}
+
+/* Iconos del botón de tema: los decide el CSS, no el estado de React. Así el
+   botón se renderiza igual en servidor y cliente (sin hydration mismatch) y no
+   parpadea el icono equivocado antes de hidratar. */
+.icono-sol {
+  display: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-tema="light"]) .icono-luna {
+    display: none;
+  }
+  :root:not([data-tema="light"]) .icono-sol {
+    display: block;
+  }
+}
+
+:root[data-tema="dark"] .icono-luna {
+  display: none;
+}
+
+:root[data-tema="dark"] .icono-sol {
+  display: block;
+}
+
+:root[data-tema="light"] .icono-luna {
+  display: block;
+}
+
+:root[data-tema="light"] .icono-sol {
+  display: none;
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}

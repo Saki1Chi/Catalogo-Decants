@@ -1,0 +1,20 @@
+{
+  "artboards": [
+    { "file": "Main.dc.html", "x": 0, "y": 0, "w": 1440, "h": 1010, "title": "Inicio — escritorio" },
+    { "file": "Catalogo.dc.html", "x": 1560, "y": 0, "w": 1440, "h": 1300, "title": "Catálogo — escritorio" },
+    { "file": "Contacto.dc.html", "x": 3120, "y": 0, "w": 1440, "h": 920, "title": "Contacto y pie — escritorio" },
+    { "file": "Detalle.dc.html", "x": 0, "y": 1440, "w": 1440, "h": 2453, "title": "Ficha de producto — escritorio" },
+    { "file": "Movil.dc.html", "x": 1560, "y": 1440, "w": 390, "h": 844, "title": "Inicio — celular" },
+    { "file": "MovilCatalogo.dc.html", "x": 2070, "y": 1440, "w": 390, "h": 844, "title": "Catálogo — celular" }
+  ],
+  "annotations": [
+    {
+      "id": "nota-alcance",
+      "x": 2600,
+      "y": 1440,
+      "w": 420,
+      "text": "Capturas del sitio real (10/09/2026).\n\nCatálogo y precios: los definitivos, los 132 del Excel.\n\nPendientes visibles en las vistas: datos de contacto del negocio (hoy de muestra) y fotos propias de producto — las actuales son de las marcas y sirven solo para maquetar."
+    }
+  ],
+  "launch": { "view": "canvas" }
+}
