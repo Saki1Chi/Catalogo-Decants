@@ -1,36 +1,66 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Catálogo de decants (promocional_perfumes)
 
-## Getting Started
+Sitio de catálogo de decants de perfume (Next.js, export estático) + panel
+de gestión para Alfredo/su empleado. Contexto de negocio y decisiones de
+producto en `design/panel-admin/` (empezar por `LEEME.md` y
+`05-backend.md`).
 
-First, run the development server:
+## Desarrollo
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abrir [http://localhost:3000](http://localhost:3000) para el catálogo
+público, `/panel` para el panel de gestión.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Backend (Firebase) — puesta en marcha
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+El panel (`/panel/**`) corre sobre Firestore/Storage/Auth — ver el porqué y
+el modelo completo en `design/panel-admin/05-backend.md`. Para que funcione
+de verdad (no solo compile) hace falta, en orden:
 
-## Learn More
+1. **Crear el proyecto** en [console.firebase.google.com](https://console.firebase.google.com/),
+   con Firestore, Storage y Authentication (método "Email link") habilitados.
+   Habilitar también **Identity Platform** (Authentication > Configuración) —
+   lo necesita la función de invitación de usuarios.
+2. Copiar `.env.local.example` a `.env.local` y completar con las claves del
+   proyecto (Configuración del proyecto > Tus apps > SDK de Firebase).
+3. Descargar una clave de cuenta de servicio (Configuración del proyecto >
+   Cuentas de servicio > Generar nueva clave privada), guardarla **fuera**
+   del repo, y apuntar `FIREBASE_SERVICE_ACCOUNT_PATH` a esa ruta en
+   `.env.local`.
+4. `firebase login` (una vez, por dispositivo) y editar `.firebaserc` con el
+   Project ID real.
+5. Deployar reglas y funciones:
+   ```bash
+   firebase deploy --only firestore:rules,storage:rules
+   cd functions && npm install && cd ..
+   firebase deploy --only functions
+   ```
+6. Configurar quién es el primer Dueño (antes de que Alfredo entre por
+   primera vez):
+   ```bash
+   npm run configurar-dueno -- --email="alfredo@..." --nombre="Alfredo Márquez"
+   ```
+7. Migrar los 132 perfumes del inventario:
+   ```bash
+   npm run migrar-inventario -- --dry-run   # revisar avisos primero
+   npm run migrar-inventario
+   ```
+8. `npm run build` y deployar `out/` al hosting elegido (Firebase Hosting,
+   Vercel, Netlify — cualquiera sirve, sigue siendo un sitio estático).
 
-To learn more about Next.js, take a look at the following resources:
+## Estructura
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `src/data/perfumes.ts`, `public/perfumes/` — snapshot con el que se hizo
+  el primer export estático (ya no se vuelve a leer una vez migrado a
+  Firestore; ver punto 7 arriba).
+- `src/app/panel/**`, `src/components/panel/**` — UI del panel.
+- `src/panel/**` — lógica/estado del panel (`store.tsx` es el punto central).
+- `src/lib/firebase.ts` — init del SDK cliente.
+- `functions/` — Cloud Functions (auth, agregados de stock, resize de fotos,
+  detección de conflictos).
+- `scripts/` — migración inicial y setup, corren local con `tsx`.
+- `firestore.rules`, `storage.rules` — permisos reales por rol.

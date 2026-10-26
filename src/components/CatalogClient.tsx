@@ -6,6 +6,7 @@ import { ProductCard } from "@/components/ProductCard";
 import { SizeModal } from "@/components/SizeModal";
 import { Reveal } from "@/components/Reveal";
 import { precioDesde } from "@/lib/format";
+import { usePerfumesConPanel } from "@/panel/usePerfumesPublicos";
 
 const CATEGORIAS: Array<Categoria | "Todos"> = [
   "Todos",
@@ -27,7 +28,10 @@ const ORDENES: Array<{ valor: Orden; etiqueta: string }> = [
 // la primera carga sea liviana.
 const POR_TANDA = 24;
 
-export function CatalogClient({ perfumes }: { perfumes: Perfume[] }) {
+export function CatalogClient({ perfumes: perfumesBase }: { perfumes: Perfume[] }) {
+  // Aplica en el cliente los cambios hechos desde /panel (precio, stock,
+  // visibilidad, destacado, altas) — ver usePerfumesConPanel.
+  const perfumes = usePerfumesConPanel(perfumesBase);
   const [busqueda, setBusqueda] = useState("");
   const [categoria, setCategoria] = useState<Categoria | "Todos">("Todos");
   const [familia, setFamilia] = useState<Familia | "Todas">("Todas");

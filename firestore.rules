@@ -1,0 +1,132 @@
+rules_version = '2';
+
+// Reglas del panel de gestión (fase 2). El control de permisos que hoy es
+// solo de UI en src/panel/store.tsx (un Empleado "no ve" el botón de editar
+// precio) se vuelve real acá — sin esto, cualquiera con la consola del
+// navegador podría escribir Firestore directo sin pasar por la UI.
+//
+// Roles: ver src/panel/types.ts (Rol = "dueño" | "empleado") y el brief de
+// producto en design/panel-admin/01-brief-producto.md, sección 4 (tabla de
+// permisos). Resumen aplicado acá: Dueño = todo; Empleado = solo registrar
+// movimientos de stock y gestionar pedidos, nunca ficha/precio/fotos.
+//
+// El primer usuario (Alfredo, rol dueño) se crea vía Cloud Function en el
+// primer login (ver functions/src/index.ts::onUserCreate) usando el Admin
+// SDK, que no pasa por estas reglas — evita el problema de "quién crea al
+// primer dueño si crear usuarios requiere ser dueño".
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function estaLogueado() {
+      return request.auth != null;
+    }
+
+    function usuarioDoc() {
+      return get(/databases/$(database)/documents/usuarios/$(request.auth.uid));
+    }
+
+    function usuarioActivo() {
+      return estaLogueado()
+        && exists(/databases/$(database)/documents/usuarios/$(request.auth.uid))
+        && usuarioDoc().data.activo == true;
+    }
+
+    function esDueño() {
+      return usuarioActivo() && usuarioDoc().data.rol == 'dueño';
+    }
+
+    // --- Catálogo ---
+    // Lectura pública sin login (así funciona el catálogo/PWA de Alfredo,
+    // visible para cualquier cliente): solo perfumes visibles. El panel
+    // (usuario activo, cualquier rol) ve todo, incluido lo oculto.
+    match /perfumes/{perfumeId} {
+      allow read: if resource.data.visible == true || usuarioActivo();
+      // Crear/editar ficha (marca, precio, fotos, visibilidad...) es
+      // exclusivo del Dueño — el Empleado solo toca stock, y eso pasa por la
+      // colección movimientosStock (ver abajo), nunca escribiendo este
+      // documento directo (el campo `stock` agregado lo recalcula una Cloud
+      // Function con Admin SDK, que no pasa por estas reglas).
+      allow create, update: if esDueño();
+      allow delete: if false; // borrado lógico vía campo `eliminado`, no delete real
+    }
+
+    // Ledger de stock, a nivel superior (no subcolección) para poder listar
+    // "últimos movimientos de cualquier perfume" con una sola query simple,
+    // sin depender de collection-group indexes. `perfumeId` es un campo, no
+    // parte de la ruta.
+    match /movimientosStock/{movId} {
+      allow read: if usuarioActivo();
+      // Append-only: ambos roles registran entradas/salidas, nadie corrige
+      // un movimiento ya creado (se compensa con uno nuevo).
+      allow create: if usuarioActivo() && request.resource.data.autorUid == request.auth.uid;
+      allow update, delete: if false;
+    }
+
+    // Cuando dos ediciones offline chocan sobre el mismo campo de un
+    // perfume (ver src/panel/store.tsx): ambos valores quedan acá para que
+    // el Dueño elija, nunca se pisan en silencio.
+    match /conflictos/{conflictoId} {
+      allow read, write: if esDueño();
+    }
+
+    // --- Pedidos --- (carga manual, brief sección "Pedidos": ambos roles)
+    match /pedidos/{pedidoId} {
+      allow read: if usuarioActivo();
+      allow create, update: if usuarioActivo();
+      allow delete: if false; // se cancela con estado, no se borra
+    }
+
+    // --- Usuarios / roles ---
+    match /usuarios/{uid} {
+      allow read: if estaLogueado() && (request.auth.uid == uid || esDueño());
+      // La creación real del doc la hace la Cloud Function de invitación /
+      // primer login (Admin SDK). Un Dueño puede además editar rol/activo a
+      // mano desde el panel.
+      allow create: if false;
+      allow update: if esDueño();
+      allow delete: if false;
+    }
+
+    // --- Invitaciones pendientes --- (email → {nombre, rol}, consumida por
+    // functions/src/index.ts::alCrearUsuario en el primer login de esa
+    // persona; ver src/panel/store.tsx::invitarUsuario)
+    match /invitaciones/{email} {
+      allow read: if esDueño();
+      allow create, update: if esDueño();
+      allow delete: if false;
+    }
+
+    // --- Config del sistema --- (p.ej. config/bootstrap con el email del
+    // primer Dueño): se setea una sola vez a mano desde la consola/Admin
+    // SDK, nunca desde el cliente.
+    match /config/{docId} {
+      allow read, write: if false;
+    }
+
+    // --- Historial (con deshacer) ---
+    match /historial/{entryId} {
+      allow read: if usuarioActivo();
+      allow create: if usuarioActivo() && request.resource.data.autorUid == request.auth.uid;
+      // "Deshacer" es acción del Dueño (brief: alcance del Empleado no
+      // incluye revertir cambios ajenos) y solo puede tocar el flag
+      // `deshecho`, no reescribir la entrada.
+      allow update: if esDueño()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['deshecho']);
+      allow delete: if false;
+    }
+
+    // --- Datos del negocio --- (nombre, contacto, redes: público para el
+    // catálogo/login, editable solo por el Dueño)
+    match /negocio/{docId} {
+      allow read: if true;
+      allow write: if esDueño();
+    }
+
+    // --- Metadatos del catálogo --- (p.ej. "actualizado hace 2 min") — lo
+    // mantiene una Cloud Function con Admin SDK, el cliente nunca escribe.
+    match /meta/{docId} {
+      allow read: if true;
+      allow write: if false;
+    }
+  }
+}

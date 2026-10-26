@@ -20,7 +20,20 @@ const body = Inter({
 export const metadata: Metadata = {
   title: `${siteConfig.nombreNegocio} — Decants de perfume`,
   description: siteConfig.eslogan,
+  manifest: "/manifest.json",
+  appleWebApp: { capable: true, statusBarStyle: "black-translucent", title: siteConfig.nombreNegocio },
 };
+
+// Registro del service worker (ver public/sw.js): PWA instalable, catálogo
+// disponible offline después de la primera visita online. `location.href`
+// (no "/") como scope para que también cubra /panel en el mismo origen.
+const scriptSW = `
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('/sw.js').catch(function () {});
+  });
+}
+`;
 
 // Corre antes del primer paint: sin esto la página pinta en claro y salta a
 // oscuro recién al hidratar React.
@@ -43,6 +56,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className="min-h-full flex flex-col font-sans bg-background text-foreground">
         <script dangerouslySetInnerHTML={{ __html: scriptTema }} />
+        <script dangerouslySetInnerHTML={{ __html: scriptSW }} />
         {children}
       </body>
     </html>

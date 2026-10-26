@@ -17,6 +17,10 @@ export function ProductCard({
   const desde = precioDesde(perfume.tamanos);
   const stock = stockTotal(perfume.tamanos);
   const agotado = stock !== null && stock <= 0;
+  // Alta creada desde /panel: no tiene página de detalle propia (el sitio es
+  // export estático, esa ruta solo existe para los perfumes que ya estaban
+  // en el build). Se muestra en la grilla pero sin link roto al detalle.
+  const tieneFicha = !perfume.id.startsWith("panel-nuevo");
 
   return (
     <article className="product-card group flex h-full flex-col bg-surface transition-colors duration-300 hover:bg-surface-alt/35">
@@ -43,9 +47,13 @@ export function ProductCard({
       <div className="flex flex-1 flex-col border-t border-border p-5">
         <p className="eyebrow text-muted">{perfume.marca}</p>
         <h3 className="mt-3 text-[15px] font-medium leading-snug text-ink">
-          <Link href={`/perfumes/${perfume.id}`} className="link-underline">
-            {perfume.nombre}
-          </Link>
+          {tieneFicha ? (
+            <Link href={`/perfumes/${perfume.id}`} className="link-underline">
+              {perfume.nombre}
+            </Link>
+          ) : (
+            perfume.nombre
+          )}
         </h3>
 
         {/* Chips de notas bajo el nombre: comunica la composición sin obligar
